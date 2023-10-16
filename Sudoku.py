@@ -57,6 +57,52 @@ class Sudoku:
 
         self._map[y * 9 + x] = 0
 
+    def get_hint(self):
+        # Vertical
+        for i in range(9):
+            candidate_counter = {idx: 0 for idx in range(1, 10)}
+            for j in range(9):
+                if self._map[j * 9 + i] == 0:
+                    print(i, j, self._candidate_map[j * 9 + i])
+                    for val in range(1, 10):
+                        if self._is_val_available(i, j, val):
+                            candidate_counter[val] += 1
+            for key, val in candidate_counter.items():
+                print(key)
+                if val == 1:
+                    return 0, i, 0
+
+        # Horizontal
+        for j in range(9):
+            candidate_counter = {idx: 0 for idx in range(1, 10)}
+            for i in range(9):
+                if self._map[j * 9 + i] == 0:
+                    for val in range(1, 10):
+                        if self._is_val_available(i, j, val):
+                            candidate_counter[val] += 1
+            for key, val in candidate_counter.items():
+                if val == 1:
+                    return 1, 0, j
+
+        # Block
+        for block_i in range(3):
+            for block_j in range(3):
+                candidate_counter = {idx: 0 for idx in range(1, 10)}
+                for i in range(3):
+                    for j in range(3):
+                        idx_i = block_i * 3 + i
+                        idx_j = block_j * 3 + j
+                        if self._map[idx_j * 9 + idx_i] == 0:
+                            for val in range(1, 10):
+                                if self._is_val_available(idx_i, idx_j, val):
+                                    candidate_counter[val] += 1
+                            # candidate_counter[self._candidate_map[idx_j * 9 + idx_i]] += 1
+
+                for key, val in candidate_counter.items():
+                    if val == 1:
+                        return 2, block_i, block_j
+        return -1, -1, -1
+
     def get_map(self):
         return self._map
 
