@@ -53,6 +53,20 @@ def draw_sudoku(sudoku_img, sudoku_map, sudoku_candidate_map, is_clicked=False, 
     return sudoku_img
 
 
+def draw_hint(sudoku_img, x, y, flag):
+    # Vertical
+    if flag == 0:
+        cv2.rectangle(sudoku_img, (x * BLOCK_SIZE, 0, BLOCK_SIZE, BLOCK_SIZE * 9), (255, 125, 255), 2)
+
+    elif flag == 1:
+        cv2.rectangle(sudoku_img, (0, y * BLOCK_SIZE, BLOCK_SIZE * 9, BLOCK_SIZE), (255, 125, 255), 2)
+
+    elif flag == 2:
+        cv2.rectangle(sudoku_img, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE * 3, BLOCK_SIZE * 3), (255, 125, 255), 2)
+
+    return sudoku_img
+
+
 def main():
     global CLICKED, MOUSE_X, MOUSE_Y
     sudoku = Sudoku()
@@ -126,6 +140,11 @@ def main():
                     MOUSE_X += BLOCK_SIZE
 
                 MOUSE_X, MOUSE_Y = max(0, min(8 * BLOCK_SIZE, MOUSE_X)), max(0, min(8 * BLOCK_SIZE, MOUSE_Y))
+
+        elif key == ord('h'):
+            flag, x, y = sudoku.get_hint()
+            print(flag, x, y)
+            sudoku_img = draw_hint(sudoku_img, x, y, flag)
 
         if changed:
             with open('last_game.bak', 'w') as fout:
